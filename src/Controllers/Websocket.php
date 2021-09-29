@@ -17,6 +17,11 @@ class Websocket extends Controller
      * @var Config
      */
     protected $config;
+    
+    /**
+     * @var CodeigniterWebsocket 
+     */
+    protected CodeigniterWebsocket $service;
 
     public function __construct()
     {
@@ -25,10 +30,11 @@ class Websocket extends Controller
 
     public function start()
     {
-        $ws = service('CodeigniterWebsocket');
-        $ws->set_callback('auth', array($this, '_auth'));
-        $ws->set_callback('event', array($this, '_event'));
-        $ws->run();
+        $this->service = service('CodeigniterWebsocket');
+        $this->service->set_callback('auth', array($this, '_auth'));
+        $this->service->set_callback('event', array($this, '_event'));
+        $this->service->set_callback('citimer', array($this, '_citimer'));
+        $this->service->run();
     }
 
     public function user($user_id = null)
@@ -47,5 +53,12 @@ class Websocket extends Controller
     {
         // Here you can do everyting you want, each time message is received
         echo 'Hey ! I\'m an EVENT callback' . PHP_EOL;
+    }
+    
+    public function _citimer($datetime = null)
+    {
+       foreach ($this->service->server->clients as $client) {
+           //Can send message for all users
+        }
     }
 }
