@@ -61,6 +61,12 @@ class CodeigniterWebsocket
     public $callback = array();
 
     /**
+     * Server variable, which contain the Server object
+     * @var Server
+     */
+    public ?Server $server = null;
+
+    /**
      * Class Constructor
      * @method __construct
      * @param array $config Configuration
@@ -83,10 +89,11 @@ class CodeigniterWebsocket
     public function run()
     {
         // Initialize all the necessary class
+        $this->server = new Server($this->config, $this->callback);
         $server = IoServer::factory(
             new HttpServer(
                 new WsServer(
-                    new Server($this->config, $this->callback)
+                    $this->server
                 )
             ),
             $this->config->port,
